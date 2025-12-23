@@ -1,0 +1,30 @@
+---
+- name: Set apt keys
+  ansible.builtin.get_url:
+    url: "{{ item.signed_by }}"
+    dest: "{{ apt_keyrings_dir }}/{{ item.name }}.asc"
+    mode: '0644'
+  when:
+    - item.signed_by is defined
+    - item.signed_by != ''
+    - item.signed_by is uri(schemes=['https'])
+
+- name: Add specified repository into sources list
+  ansible.builtin.apt_repository:
+    repo: "{{ type }} [{{ architecture }} {{ signed_by }}] {{ uri }} {{ codename }} {{ components }}"
+    filename: "{{ item.filename | default(item.name) }}"
+    state: "{{ item.state | default('present') }}"
+    update_cache_retries: "{{ apt_update_cache_retries | default(omit) }}"
+    update_cache_retry_max_delay: "{{ apt_update_cache_retry_max_delay | default(omit) }}"
+    update_cache: "{{ apt_update_cache | default(omit) }}"
+    validate_certs: "{{ apt_validate_certs | default(omit) }}"
+  vars:
+    type: "{{ sub_item.0 }}"
+    architecture: "{{ 'arch='+ sub_item.1 if sub_item.1 is defined and sub_item.1 != '' else ''}}"
+    uri: "{{ sub_item.2 }}"
+    codename: "{{ sub_item.3 }}"
+    signed_by: "{{ 'signed-by=' + ansible_apt_keyrings_dir + '/' + item.name + '.asc' if item.signed_by is defined else '' }}"
+    components: "{{ item.components | default(['main']) | join(' ') }}"
+  loop: "{{ item.types | product((item.architectures if item.architectures is defined else ['']), item.uris, item.suites) | list }}"
+  loop_control:
+    loop_var: sub_item

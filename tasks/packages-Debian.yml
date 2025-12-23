@@ -3,12 +3,12 @@
 - name: Update
   ansible.builtin.apt:
     update_cache: true
-    cache_valid_time: "{{ apt_update_cache_valid_time | default(apt_update_cache_valid_time_default) }}"
+    cache_valid_time: "{{ apt_update_cache_valid_time | default(omit) }}"
   tags:
     - apt-update
     - apt-upgrade
 
-- name: Upgrade all packages to their latest version
+- name: Upgrade all packages to their latest version  # noqa: package-latest
   ansible.builtin.apt:
     name: "*"
     state: latest

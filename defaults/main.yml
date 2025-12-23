@@ -7,8 +7,7 @@ apt_repositories_group: []
 apt_repositories_host: []
 
 apt_update: true
-apt_update_cache_valid_time_default: 3600
-apt_update_cache_valid_time:
+apt_update_cache_valid_time: 3600
 apt_upgrade_type: dist
 
 apt_autoremove: true
