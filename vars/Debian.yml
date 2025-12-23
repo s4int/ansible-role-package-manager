@@ -1,0 +1,4 @@
+---
+
+apt_repositories: "{{ apt_repositories_default + apt_repositories_group + apt_repositories_host }}"
+apt_packages_remove: "{{ apt_packages_remove_default + apt_packages_remove_group + apt_packages_remove_host }}"

@@ -1,0 +1,5 @@
+---
+
+- ansible.builtin.include_tasks: package-manager.yml
+  tags:
+    - package-manager

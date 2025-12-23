@@ -1,0 +1,18 @@
+---
+
+apt_keyrings_dir: /etc/apt/keyrings
+apt_deb822: false
+apt_repositories_default: []
+apt_repositories_group: []
+apt_repositories_host: []
+
+apt_update: true
+apt_update_cache_valid_time_default: 3600
+apt_update_cache_valid_time:
+apt_upgrade_type: dist
+
+apt_autoremove: true
+
+apt_remove_purge: false
+
+apt_packages_remove: []
