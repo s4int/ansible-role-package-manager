@@ -1,5 +1,5 @@
 ---
 
-- ansible.builtin.include_tasks: package-manager.yml # noqa: name[missing]
+- ansible.builtin.include_tasks: package-manager.yml  # noqa: name[missing]
   tags:
     - package-manager
