@@ -1,7 +1,7 @@
 ---
 
 - name: Configure apt repositories
-  ansible.builtin.import_tasks: apt_repo_item.yml
+  ansible.builtin.include_tasks: apt_repo_item.yml
   loop: "{{ ansible_apt_repositories }}"
   loop_control:
     label: "{{ item.name }}"
