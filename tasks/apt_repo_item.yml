@@ -23,8 +23,12 @@
     architecture: "{{ 'arch='+ sub_item.1 if sub_item.1 is defined and sub_item.1 != '' else ''}}"
     uri: "{{ sub_item.2 }}"
     codename: "{{ sub_item.3 }}"
-    signed_by: "{{ 'signed-by=' + ansible_apt_keyrings_dir + '/' + item.name + '.asc' if item.signed_by is defined else '' }}"
+    signed_by: >
+      {{ 'signed-by=' + ansible_apt_keyrings_dir + '/' + item.name + '.asc' if item.signed_by is defined else '' }}
     components: "{{ item.components | default(['main']) | join(' ') }}"
-  loop: "{{ item.types | product((item.architectures if item.architectures is defined else ['']), item.uris, item.suites) | list }}"
+  loop: >-
+    {{ item.types
+    | product((item.architectures if item.architectures is defined else ['']), item.uris, item.suites)
+    | list }}
   loop_control:
     loop_var: sub_item
