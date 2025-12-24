@@ -13,3 +13,4 @@ repos:
       - id: yamllint
         name: yamllint
         files: \.(yml|yaml)$
+        args: [-c=.yamllint]
