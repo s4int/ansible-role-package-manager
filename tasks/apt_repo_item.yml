@@ -11,7 +11,12 @@
 
 - name: Add specified repository into sources list
   ansible.builtin.apt_repository:
-    repo: "{{ type }} [{{ architecture }} {{ signed_by }}] {{ uri }} {{ codename }} {{ components }}"
+    repo: >-
+      {{ type }}
+      {% if (architecture is not none and architecture != '') or (signed_by is not none and signed_by != '') %}
+      [{{ [architecture, signed_by] | reject('equalto', '') | reject('equalto', none) | list | join(' ') }}]
+      {% endif %}
+      {{ uri }} {{ codename }} {{ components }}
     filename: "{{ item.filename | default(item.name) }}"
     state: "{{ item.state | default('present') }}"
     update_cache_retries: "{{ apt_update_cache_retries | default(omit) }}"
@@ -19,16 +24,31 @@
     update_cache: "{{ apt_update_cache | default(omit) }}"
     validate_certs: "{{ apt_validate_certs | default(omit) }}"
   vars:
-    type: "{{ sub_item.0 }}"
-    architecture: "{{ 'arch='+ sub_item.1 if sub_item.1 is defined and sub_item.1 != '' else ''}}"
-    uri: "{{ sub_item.2 }}"
-    codename: "{{ sub_item.3 }}"
-    signed_by: >
-      {{ 'signed-by=' + ansible_apt_keyrings_dir + '/' + item.name + '.asc' if item.signed_by is defined else '' }}
+    type: "{{ sub_item.type }}"
+    architecture: >-
+      {% if item.architectures | default([]) | length > 0 %}
+      arch={{ item.architectures | join(',') }}
+      {% endif %}
+    signed_by: >-
+      {% if item.signed_by | default('') != '' %}
+      signed-by={{ apt_keyrings_dir }}/{{ item.name }}.asc
+      {% endif %}
+    uri: "{{ sub_item.uri }}"
+    codename: "{{ sub_item.suite }}"
     components: "{{ item.components | default(['main']) | join(' ') }}"
   loop: >-
-    {{ item.types
-    | product((item.architectures if item.architectures is defined else ['']), item.uris, item.suites)
-    | list }}
+    {%- set resp = [] -%}
+    {%- for type in item.types -%}
+    {%- for uri in item.uris -%}
+    {%- for suite in item.suites -%}
+    {%- set _ = resp.append({
+      'type': type,
+      'uri': uri,
+      'suite': suite
+      }) -%}
+    {%- endfor -%}
+    {%- endfor -%}
+    {%- endfor -%}
+    {{ resp }}
   loop_control:
     loop_var: sub_item
