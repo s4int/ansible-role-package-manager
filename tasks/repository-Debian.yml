@@ -2,11 +2,11 @@
 
 - name: Configure apt repositories
   ansible.builtin.include_tasks: apt_repo_item.yml
-  loop: "{{ ansible_apt_repositories }}"
+  loop: "{{ apt_repositories }}"
   loop_control:
     label: "{{ item.name }}"
   when:
-    - ansible_apt_repositories is defined and ansible_apt_repositories | length > 0
+    - apt_repositories is defined and apt_repositories | length > 0
     - (not apt_deb822) | bool
   tags:
     - apt-repo
@@ -17,12 +17,12 @@
     types: "{{ item.types | default(['deb']) }}"
     architectures: "{{ item.architecture | default(omit) }}"
     components: "{{ item.components | default(['main']) }}"
-    suites: "{{ item.suites | default(ansible_distribution_release) }}"
+    suites: "{{ item.suites | default(ansible_facts['distribution']) }}"
     uris: "{{ item.uris }}"
     signed_by: "{{ item.signed_by | default('') }}"
     state: "{{ item.state | default('present') }}"
     enabled: "{{ item.enabled | default(true) }}"
-  loop: "{{ ansible_apt_repositories | default([]) }}"
+  loop: "{{ apt_repositories | default([]) }}"
   loop_control:
     label: "{{ item.name }}"
   when: apt_deb822 | bool
