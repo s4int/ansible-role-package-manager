@@ -1,4 +1,44 @@
 ---
+- name: Ensure apt-transport-https is installed
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - gpg
+    state: present
+    update_cache: true
+  when:
+    - apt_repositories is defined and apt_repositories | length > 0
+    - (not apt_deb822) | bool
+  tags:
+    - apt-repo
+
+- name: List files matching '*.list|*.sources'
+  ansible.builtin.find:
+    paths: "/etc/apt"
+    patterns:
+      - "*.list"
+      - "*.sources"
+    recurse: true
+  register: to_remove
+  when:
+    - apt_repositories_remove | bool
+
+- name: Remove apt repository files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: >-
+    {{ to_remove.files | map(attribute='path') |
+    reject('search', apt_repositories_host | map(attribute='name') | join('|')) |
+    list }}
+  loop_control:
+    label: "{{ item }}"
+  when:
+    - apt_repositories_remove | bool
+    - to_remove.matched > 0
+  tags:
+    - apt-repo
+    - apt-repo-remove
 
 - name: Configure apt repositories
   ansible.builtin.include_tasks: apt_repo_item.yml

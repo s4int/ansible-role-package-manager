@@ -3,6 +3,8 @@
 apt_keyrings_dir: /etc/apt/keyrings
 apt_deb822: false
 
+apt_repositories_remove: false
+
 apt_repositories_default: []
 apt_repositories_group: []
 apt_repositories_host: []
