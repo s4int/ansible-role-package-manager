@@ -1,6 +1,6 @@
 # Environments
 .env
-.venv
+.venv/
 env/
 venv/
 ENV/
@@ -10,5 +10,5 @@ venv.bak/
 .python.version
 .vault_pass_file
 *.iml
-.ansible
-.idea
+.ansible/
+.idea/
