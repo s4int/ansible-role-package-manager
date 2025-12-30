@@ -14,13 +14,8 @@
         image: "{{ item.image }}"
         state: started
         command: sleep 1d
-        log_driver: json-file
       register: result
       loop: "{{ molecule_yml.platforms }}"
-
-    - name: Print some info
-      ansible.builtin.debug:
-        msg: "{{ result.results }}"
 
     - name: Fail if container is not running
       when: >
