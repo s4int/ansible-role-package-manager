@@ -31,6 +31,8 @@
     - item.packages | default([]) | length > 0
     - item.condition | default(true)
   loop: "{{ apt_packages_conditional | default([]) }}"
+  loop_control:
+    label: "{{ item.state | default('present') }}: {{ item.packages | join(',') }}"
   tags:
     - packages
 
