@@ -37,6 +37,7 @@
 - name: Autoremove  # noqa args[module]
   ansible.builtin.apt:
     autoremove: true
+    purge: "{{ apt_remove_purge }}"
   when: apt_autoremove | bool
   tags:
     - autoremove
