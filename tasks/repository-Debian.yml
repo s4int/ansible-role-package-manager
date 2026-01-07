@@ -10,7 +10,7 @@
     - apt_repositories is defined and apt_repositories | length > 0
     - (not apt_deb822) | bool
   tags:
-    - apt-repo
+    - repo
 
 - name: List files matching '*.list|*.sources'
   ansible.builtin.find:
@@ -37,8 +37,7 @@
     - apt_repositories_remove | bool
     - to_remove.matched > 0
   tags:
-    - apt-repo
-    - apt-repo-remove
+    - repo
 
 - name: Configure apt repositories
   ansible.builtin.include_tasks: apt_repo_item.yml
@@ -49,7 +48,7 @@
     - apt_repositories is defined and apt_repositories | length > 0
     - (not apt_deb822) | bool
   tags:
-    - apt-repo
+    - repo
 
 - name: Add apt deb822 repository
   ansible.builtin.deb822_repository:
@@ -67,13 +66,13 @@
     label: "{{ item.name }}"
   when: apt_deb822 | bool
   tags:
-    - apt-repo
+    - repo
 
 - name: Update
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: "{{ apt_update_cache_valid_time | default(omit) }}"
   tags:
-    - apt-repo
-    - apt-update
-    - apt-upgrade
+    - repo
+    - update
+    - upgrade

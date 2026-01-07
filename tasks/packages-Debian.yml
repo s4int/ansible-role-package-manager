@@ -5,22 +5,22 @@
     update_cache: true
     cache_valid_time: "{{ apt_update_cache_valid_time | default(omit) }}"
   tags:
-    - apt-update
-    - apt-upgrade
+    - update
+    - upgrade
 
 - name: Upgrade all packages to their latest version  # noqa: package-latest
   ansible.builtin.apt:
     name: "*"
     state: latest
   tags:
-    - apt-upgrade
+    - upgrade
 
 - name: Upgrade
   ansible.builtin.apt:
     upgrade: "{{ apt_upgrade_type }}"
     update_cache: true
   tags:
-    - apt-upgrade
+    - upgrade
 
 - name: Install packages conditionally
   ansible.builtin.apt:
@@ -32,11 +32,11 @@
     - item.condition | default(true)
   loop: "{{ apt_packages_conditional | default([]) }}"
   tags:
-    - apt-remove
+    - packages
 
 - name: Autoremove  # noqa args[module]
   ansible.builtin.apt:
     autoremove: true
   when: apt_autoremove | bool
   tags:
-    - apt-autoremove
+    - autoremove
