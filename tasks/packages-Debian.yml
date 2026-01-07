@@ -22,17 +22,15 @@
   tags:
     - apt-upgrade
 
-- name: Install packages  (state=present is optional)
+- name: Install packages conditionally
   ansible.builtin.apt:
-    name: "{{ apt_packages | default([]) }}"
-    state: present
-
-
-- name: Remove
-  ansible.builtin.apt:
-    name: "{{ apt_packages_remove }}"
-    state: absent
+    name: "{{ item.packages | default([]) }}"
+    state: "{{ item.state | default('present') }}"
     purge: "{{ apt_remove_purge }}"
+  when:
+    - item.packages | default([]) | length > 0
+    - item.condition | default(true)
+  loop: "{{ apt_packages_conditional | default([]) }}"
   tags:
     - apt-remove
 

@@ -1,4 +1,8 @@
 ---
 
-apt_repositories: "{{ apt_repositories_default + apt_repositories_group + apt_repositories_host }}"
-apt_packages_remove: "{{ apt_packages_remove_default + apt_packages_remove_group + apt_packages_remove_host }}"
+apt_repositories: "{{ q('vars', *q('varnames', '^apt_repositories_.*')) | flatten }}"
+apt_packages_remove: "{{ q('vars', *q('varnames', '^apt_packages_remove_.*')) | flatten }}"
+apt_packages_conditional: |
+  {{ [{'packages': apt_packages|default([])}] +
+     q('vars', *q('varnames', '^apt_packages_conditional_.*')) | flatten +
+     [{'packages': apt_packages_remove|default([]), 'state': 'absent'}] }}
