@@ -3,7 +3,7 @@
   ansible.builtin.get_url:
     url: "{{ item.signed_by }}"
     dest: "{{ apt_keyrings_dir }}/{{ item.name }}.asc"
-    mode: '0644'
+    mode: "0644"
   when:
     - item.signed_by is defined
     - item.signed_by != ''

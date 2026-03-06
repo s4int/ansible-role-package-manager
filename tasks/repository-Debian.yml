@@ -21,7 +21,7 @@
     recurse: true
   register: to_remove
   when:
-    - apt_repositories_remove | bool
+    - apt_repos_remove | bool
 
 - name: Remove apt repository files
   ansible.builtin.file:
@@ -34,7 +34,7 @@
   loop_control:
     label: "{{ item }}"
   when:
-    - apt_repositories_remove | bool
+    - apt_repos_remove | bool
     - to_remove.matched > 0
   tags:
     - repo

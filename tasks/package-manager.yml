@@ -1,5 +1,4 @@
 ---
-
 - name: Load OS dependent variables
   ansible.builtin.include_vars:
     file: '{{ item }}'
