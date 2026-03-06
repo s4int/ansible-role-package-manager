@@ -15,14 +15,30 @@
 - name: Converge
   hosts: molecule
   gather_facts: true
-  vars:
-    apt_repositories_remove: false
-    apt_repositories_host:
-      - name: debian-security
-        types: ['deb']
-        uris:
-          - "https://deb.debian.org/debian-security"
-        suites: ["{{ ansible_facts['distribution_release'] }}-security"]
-        components: ["main"]
+  pre_tasks:
+    - name: Set apt_repositories_host as host fact for Debian
+      ansible.builtin.set_fact:
+        apt_repos_remove: false
+        apt_repositories_host:
+          - name: debian-psnc
+            types: ["deb"]
+            uris:
+              - "http://ftp.psnc.pl/debian/"
+            suites: ["{{ ansible_facts['distribution_release'] }}"]
+            components: ["main"]
+      when: ansible_facts['distribution'] == 'Debian'
+
+    - name: Set apt_repositories_host as host fact for Ubuntu
+      ansible.builtin.set_fact:
+        apt_repos_remove: false
+        apt_repositories_host:
+          - name: ubuntu-ports
+            types: ["deb"]
+            uris:
+              - "https://ports.ubuntu.com/"
+            suites: ["{{ ansible_facts['distribution_release'] }}"]
+            components: ["main"]
+      when: ansible_facts['distribution'] == 'Ubuntu'
+
   roles:
     - role: s4int.package_manager
