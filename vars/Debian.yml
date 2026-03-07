@@ -1,5 +1,4 @@
 ---
-
 apt_repositories: "{{ q('vars', *q('varnames', '^apt_repositories_.*')) | flatten }}"
 apt_packages_remove: "{{ q('vars', *q('varnames', '^apt_packages_remove_.*')) | flatten }}"
 apt_packages_conditional: |
