@@ -1,0 +1,7 @@
+---
+dnf_repositories: "{{ q('vars', *q('varnames', '^dnf_repositories_.*')) | flatten }}"
+dnf_packages_remove: "{{ q('vars', *q('varnames', '^dnf_packages_remove_.*')) | flatten }}"
+dnf_packages_conditional: |
+  {{ [{'packages': dnf_packages|default([])}] +
+     q('vars', *q('varnames', '^dnf_packages_conditional_.*')) | flatten +
+     [{'packages': dnf_packages_remove|default([]), 'state': 'absent'}] }}
