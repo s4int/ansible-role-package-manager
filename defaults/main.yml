@@ -1,9 +1,9 @@
 ---
-
+# APT (Debian/Ubuntu) defaults
 apt_keyrings_dir: /etc/apt/keyrings
 apt_deb822: false
 
-apt_repositories_remove: false
+apt_repos_remove: false
 
 apt_update: true
 apt_update_cache_valid_time: 3600
