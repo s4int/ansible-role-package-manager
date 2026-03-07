@@ -1,0 +1,49 @@
+---
+dependency:
+  name: galaxy
+  options:
+    ignore-certs: false
+    ignore-errors: false
+    role-file: ../shared/requirements.yml
+    requirements-file: ../shared/requirements.yml
+
+lint: set -e ; yamllint . ; ansible-lint
+
+driver:
+  name: docker
+
+# Version             Code name         Release       End of Support   End of Life
+# Rocky Linux 8	      Green Obsidian	  2021-05-01	  2024-05-31	     2029-05-31
+# Rocky Linux 9	      Blue Onyx	        2022-07-14	  2027-05-31	     2032-05-31
+# Rocky Linux 10	    Red Quartz	      2025-06-11	  2030-05-31	     2035-05-31
+platforms:
+  - name: docker-container
+    image: ${MOLECULE_DISTRO:-geerlingguy/docker-rockylinux9-ansible}
+#  - name: container-rockylinux-10
+#    image: geerlingguy/docker-rockylinux10-ansible
+#  - name: container-rockylinux-8
+#    image: geerlingguy/docker-rockylinux8-ansible
+
+provisioner:
+  name: ansible
+
+  playbooks:
+    create: ../shared/create.yml
+    converge: converge.yml
+    destroy: ../shared/destroy.yml
+    side_effect: side_effect.yml
+    verify: verify.yml
+
+  inventory:
+    group_vars:
+      molecule:
+        dnf_update: true
+        dnf_upgrade: false
+        dnf_autoremove: true
+
+verifier:
+  name: testinfra
+  directory: tests/
+  options:
+    v: true
+    sudo: true

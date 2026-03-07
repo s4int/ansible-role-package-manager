@@ -1,0 +1,74 @@
+---
+- name: List files matching '*.repo'
+  ansible.builtin.find:
+    paths: "/etc/yum.repos.d"
+    patterns:
+      - "*.repo"
+    recurse: false
+  register: dnf_repo_files_to_remove
+  when:
+    - dnf_repos_remove | bool
+  tags:
+    - repo
+
+- name: Remove dnf repository files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: >-
+    {{ dnf_repo_files_to_remove.files | map(attribute='path') |
+    reject('search', dnf_repositories_host | default([]) | map(attribute='name') | join('|')) |
+    list }}
+  loop_control:
+    label: "{{ item }}"
+  when:
+    - dnf_repos_remove | bool
+    - dnf_repo_files_to_remove.matched > 0
+  tags:
+    - repo
+
+- name: Import RPM GPG keys
+  ansible.builtin.rpm_key:
+    key: "{{ item.gpgkey }}"
+    state: present
+  loop: "{{ dnf_repositories | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - dnf_repositories is defined and dnf_repositories | length > 0
+    - item.gpgkey is defined and item.gpgkey != ''
+  tags:
+    - repo
+
+- name: Configure dnf/yum repositories
+  ansible.builtin.yum_repository:
+    name: "{{ item.name }}"
+    description: "{{ item.description | default(item.name) }}"
+    baseurl: "{{ item.baseurl | default(omit) }}"
+    mirrorlist: "{{ item.mirrorlist | default(omit) }}"
+    metalink: "{{ item.metalink | default(omit) }}"
+    gpgcheck: "{{ item.gpgcheck | default(true) }}"
+    gpgkey: "{{ item.gpgkey | default(omit) }}"
+    enabled: "{{ item.enabled | default(true) }}"
+    state: "{{ item.state | default('present') }}"
+    sslverify: "{{ item.sslverify | default(true) }}"
+    sslcacert: "{{ item.sslcacert | default(omit) }}"
+    repo_gpgcheck: "{{ item.repo_gpgcheck | default(omit) }}"
+    priority: "{{ item.priority | default(omit) }}"
+    module_hotfixes: "{{ item.module_hotfixes | default(omit) }}"
+  loop: "{{ dnf_repositories | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - dnf_repositories is defined and dnf_repositories | length > 0
+  tags:
+    - repo
+
+- name: Update dnf cache
+  ansible.builtin.dnf:
+    update_cache: true
+  when: dnf_update | bool
+  tags:
+    - repo
+    - update
+    - upgrade

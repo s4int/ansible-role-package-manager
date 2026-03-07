@@ -90,7 +90,80 @@ apt_repositories_docker:
 | `state` | No | `present` | Repository state (`present`, `absent`) |
 | `enabled` | No | `true` | Enable/disable repository (deb822 only) |
 
-## RedHat Specifics
+## RedHat/Fedora/CentOS/Rocky Specifics
+
+### DNF Configuration (RedHat/Fedora/CentOS/Rocky)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `dnf_repos_remove` | `false` | Remove repository files not managed by this role |
+| `dnf_update` | `true` | Update package cache |
+| `dnf_upgrade` | `true` | Upgrade all packages to their latest version |
+| `dnf_autoremove` | `true` | Automatically remove unused packages |
+
+### Package Management
+
+Define packages to install using the `dnf_packages` variable:
+
+```yaml
+dnf_packages:
+  - vim
+  - curl
+  - htop
+```
+
+Define packages to remove using the `dnf_packages_remove` variable:
+
+```yaml
+dnf_packages_remove:
+  - nano
+```
+
+### Conditional Package Installation
+
+Use variables prefixed with `dnf_packages_conditional_*` for conditional package installation:
+
+```yaml
+dnf_packages_conditional_docker:
+  - packages:
+      - docker-ce
+      - docker-ce-cli
+    condition: "{{ install_docker | default(false) }}"
+    state: present
+```
+
+### Repository Management
+
+Define repositories using variables prefixed with `dnf_repositories_*`:
+
+```yaml
+dnf_repositories_docker:
+  - name: docker
+    description: Docker CE Stable
+    baseurl: "https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}/{{ ansible_facts['distribution_major_version'] }}/$basearch/stable"
+    gpgcheck: true
+    gpgkey: "https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}/gpg"
+    enabled: true
+```
+
+#### Repository Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `name` | Yes | - | Repository identifier |
+| `description` | No | `item.name` | Repository description |
+| `baseurl` | No | - | Repository base URL |
+| `mirrorlist` | No | - | Repository mirrorlist URL |
+| `metalink` | No | - | Repository metalink URL |
+| `gpgcheck` | No | `true` | Check GPG signatures for packages |
+| `gpgkey` | No | - | URL to GPG key |
+| `enabled` | No | `true` | Enable repository |
+| `state` | No | `present` | Repository state (`present`, `absent`) |
+| `sslverify` | No | `true` | Verify SSL certificates |
+| `sslcacert` | No | - | URL/path to SSL CA certificate |
+| `repo_gpgcheck` | No | - | Check repository metadata GPG signatures |
+| `priority` | No | - | Repository priority |
+| `module_hotfixes` | No | - | Enable module hotfixes |
 
 ## Example Playbook
 

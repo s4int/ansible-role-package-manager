@@ -1,0 +1,36 @@
+---
+- name: Update dnf cache
+  ansible.builtin.dnf:
+    update_cache: true
+  when: dnf_update | bool
+  tags:
+    - update
+    - upgrade
+
+- name: Upgrade all packages to their latest version  # noqa: package-latest
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+  when: dnf_upgrade | bool
+  tags:
+    - upgrade
+
+- name: Install packages conditionally
+  ansible.builtin.dnf:
+    name: "{{ item.packages | default([]) }}"
+    state: "{{ item.state | default('present') }}"
+  when:
+    - item.packages | default([]) | length > 0
+    - item.condition | default(true)
+  loop: "{{ dnf_packages_conditional | default([]) }}"
+  loop_control:
+    label: "{{ item.state | default('present') }}: {{ item.packages | join(',') }}"
+  tags:
+    - packages
+
+- name: Autoremove unused packages
+  ansible.builtin.dnf:
+    autoremove: true
+  when: dnf_autoremove | bool
+  tags:
+    - autoremove

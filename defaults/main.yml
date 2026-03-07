@@ -12,3 +12,11 @@ apt_upgrade_type: dist
 apt_autoremove: true
 
 apt_remove_purge: true
+
+# DNF (RedHat/Fedora/CentOS/Rocky) defaults
+dnf_repos_remove: false
+
+dnf_update: true
+dnf_upgrade: true
+
+dnf_autoremove: true
