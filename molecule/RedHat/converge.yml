@@ -1,0 +1,35 @@
+---
+- name: Fail if molecule group is missing
+  hosts: localhost
+  tasks:
+    - name: Print some info
+      ansible.builtin.debug:
+        msg: "{{ groups }}"
+
+    - name: Assert group existence
+      ansible.builtin.assert:
+        that: "'molecule' in groups"
+        fail_msg: |
+          molecule group was not found inside inventory groups: {{ groups }}
+
+- name: Converge
+  hosts: molecule
+  gather_facts: true
+  pre_tasks:
+    - name: Set dnf_repositories_host as host fact for RedHat
+      ansible.builtin.set_fact:
+        dnf_repos_remove: false
+        dnf_repositories_host:
+          - name: epel
+            description: Extra Packages for Enterprise Linux
+            metalink: |-
+              "https://mirrors.fedoraproject.org/metalink?repo=epel-{{ ansible_facts['distribution_major_version'] }}
+              &arch={{ ansible_facts['architecture'] }}"
+            gpgcheck: true
+            gpgkey: |
+              "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_facts['distribution_major_version'] }}"
+            enabled: true
+      when: ansible_facts['os_family'] == 'RedHat'
+
+  roles:
+    - role: s4int.package_manager

@@ -1,0 +1,49 @@
+---
+dependency:
+  name: galaxy
+  options:
+    ignore-certs: false
+    ignore-errors: false
+    role-file: ../shared/requirements.yml
+    requirements-file: ../shared/requirements.yml
+
+lint: set -e ; yamllint . ; ansible-lint
+
+driver:
+  name: docker
+
+# Rocky Linux 9 (RHEL 9 compatible) - EOL: May 31, 2032
+# Fedora 41 - EOL: November 2025
+# Fedora 42 - EOL: May 2026
+platforms:
+  - name: container-rockylinux-9
+    image: ${MOLECULE_DISTRO:-geerlingguy/docker-rockylinux9-ansible}
+#  - name: container-fedora-41
+#    image: geerlingguy/docker-fedora41-ansible
+# geerlingguy/docker-rockylinux8-ansible
+#  - name: container-almalinux-9
+#    image: geerlingguy/docker-almalinux9-ansible
+
+provisioner:
+  name: ansible
+
+  playbooks:
+    create: ../shared/create.yml
+    converge: converge.yml
+    destroy: ../shared/destroy.yml
+    side_effect: side_effect.yml
+    verify: verify.yml
+
+  inventory:
+    group_vars:
+      molecule:
+        dnf_update: true
+        dnf_upgrade: false
+        dnf_autoremove: true
+
+verifier:
+  name: testinfra
+  directory: tests/
+  options:
+    v: true
+    sudo: true
