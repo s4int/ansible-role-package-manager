@@ -1,0 +1,44 @@
+---
+- name: Fail if molecule group is missing
+  hosts: localhost
+  tasks:
+    - name: Print some info
+      ansible.builtin.debug:
+        msg: "{{ groups }}"
+
+    - name: Assert group existence
+      ansible.builtin.assert:
+        that: "'molecule' in groups"
+        fail_msg: |
+          molecule group was not found inside inventory groups: {{ groups }}
+
+- name: Converge
+  hosts: molecule
+  gather_facts: true
+  pre_tasks:
+    - name: Set apt_repositories_host as host fact for Debian
+      ansible.builtin.set_fact:
+        apt_repos_remove: false
+        apt_repositories_host:
+          - name: debian-psnc
+            types: ["deb"]
+            uris:
+              - "http://ftp.psnc.pl/debian/"
+            suites: ["{{ ansible_facts['distribution_release'] }}"]
+            components: ["main"]
+      when: ansible_facts['distribution'] == 'Debian'
+
+    - name: Set apt_repositories_host as host fact for Ubuntu
+      ansible.builtin.set_fact:
+        apt_repos_remove: false
+        apt_repositories_host:
+          - name: ubuntu-ports
+            types: ["deb"]
+            uris:
+              - "https://ports.ubuntu.com/"
+            suites: ["{{ ansible_facts['distribution_release'] }}"]
+            components: ["main"]
+      when: ansible_facts['distribution'] == 'Ubuntu'
+
+  roles:
+    - role: s4int.package_manager

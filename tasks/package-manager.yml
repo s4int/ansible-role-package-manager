@@ -1,0 +1,18 @@
+---
+- name: Load OS dependent variables
+  ansible.builtin.include_vars:
+    file: '{{ item }}'
+  with_first_found:
+    - files:
+        - "{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_major_version'] }}.yml"
+        - "{{ ansible_facts['distribution'] }}.yml"
+        - "{{ ansible_facts['os_family'] }}_{{ ansible_facts['distribution_major_version'] }}.yml"
+        - "{{ ansible_facts['os_family'] }}.yml"
+        - default.yaml
+      skip: true
+
+- name: Include repository management tasks
+  ansible.builtin.include_tasks: repository-{{ ansible_os_family }}.yml
+
+- name: Include package management tasks
+  ansible.builtin.include_tasks: packages-{{ ansible_os_family }}.yml

@@ -1,0 +1,44 @@
+---
+- name: Update
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: "{{ apt_update_cache_valid_time | default(omit) }}"
+  tags:
+    - update
+    - upgrade
+
+- name: Upgrade all packages to their latest version  # noqa: package-latest
+  ansible.builtin.apt:
+    name: "*"
+    state: latest
+  tags:
+    - upgrade
+
+- name: Upgrade
+  ansible.builtin.apt:
+    upgrade: "{{ apt_upgrade_type }}"
+    update_cache: true
+  tags:
+    - upgrade
+
+- name: Install packages conditionally
+  ansible.builtin.apt:
+    name: "{{ item.packages | default([]) }}"
+    state: "{{ item.state | default('present') }}"
+    purge: "{{ apt_remove_purge }}"
+  when:
+    - item.packages | default([]) | length > 0
+    - item.condition | default(true)
+  loop: "{{ apt_packages_conditional | default([]) }}"
+  loop_control:
+    label: "{{ item.state | default('present') }}: {{ item.packages | join(',') }}"
+  tags:
+    - packages
+
+- name: Autoremove  # noqa args[module]
+  ansible.builtin.apt:
+    autoremove: true
+    purge: "{{ apt_remove_purge }}"
+  when: apt_autoremove | bool
+  tags:
+    - autoremove

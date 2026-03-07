@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  role_name: package_manager
+  author: s4int
+  description: Manage repos and packages on Linux.
+  company: "Midwestern Mac, LLC"
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.20.1
+  platforms:
+    - name: Debian
+      versions:
+        - bullseye
+        - bookworm
+        - trixie
+  galaxy_tags:
+    - system
