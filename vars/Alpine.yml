@@ -1,0 +1,7 @@
+---
+apk_repositories: "{{ q('vars', *q('varnames', '^apk_repositories_.*')) | flatten }}"
+apk_packages_remove: "{{ q('vars', *q('varnames', '^apk_packages_remove_.*')) | flatten }}"
+apk_packages_conditional: |
+  {{ [{'packages': apk_packages|default([])}] +
+     q('vars', *q('varnames', '^apk_packages_conditional_.*')) | flatten +
+     [{'packages': apk_packages_remove|default([]), 'state': 'absent'}] }}

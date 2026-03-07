@@ -1,0 +1,28 @@
+---
+- name: Update apk cache
+  community.general.apk:
+    update_cache: true
+  when: apk_update | bool
+  tags:
+    - update
+    - upgrade
+
+- name: Upgrade all packages to their latest version
+  community.general.apk:
+    upgrade: true
+  when: apk_upgrade | bool
+  tags:
+    - upgrade
+
+- name: Install packages conditionally
+  community.general.apk:
+    name: "{{ item.packages | default([]) }}"
+    state: "{{ item.state | default('present') }}"
+  when:
+    - item.packages | default([]) | length > 0
+    - item.condition | default(true)
+  loop: "{{ apk_packages_conditional | default([]) }}"
+  loop_control:
+    label: "{{ item.state | default('present') }}: {{ item.packages | join(',') }}"
+  tags:
+    - packages

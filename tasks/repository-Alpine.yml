@@ -1,0 +1,47 @@
+---
+- name: Backup existing repositories file
+  ansible.builtin.copy:
+    src: /etc/apk/repositories
+    dest: /etc/apk/repositories.bak
+    remote_src: true
+    mode: "0644"
+  when:
+    - apk_repositories_backup | bool
+    - apk_repositories is defined and apk_repositories | length > 0
+  tags:
+    - repo
+
+- name: Remove all repository entries
+  ansible.builtin.copy:
+    content: ""
+    dest: /etc/apk/repositories
+    mode: "0644"
+  when:
+    - apk_repos_remove | bool
+    - apk_repositories is defined and apk_repositories | length > 0
+  tags:
+    - repo
+
+- name: Configure apk repositories
+  ansible.builtin.lineinfile:
+    path: /etc/apk/repositories
+    line: "{{ item.url }}"
+    state: "{{ item.state | default('present') }}"
+    create: true
+    mode: "0644"
+  loop: "{{ apk_repositories | default([]) }}"
+  loop_control:
+    label: "{{ item.name | default(item.url) }}"
+  when:
+    - apk_repositories is defined and apk_repositories | length > 0
+  tags:
+    - repo
+
+- name: Update apk cache
+  community.general.apk:
+    update_cache: true
+  when: apk_update | bool
+  tags:
+    - repo
+    - update
+    - upgrade
