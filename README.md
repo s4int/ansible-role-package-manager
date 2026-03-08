@@ -5,6 +5,8 @@ Ansible role to manage packages and repositories on Linux systems.
 ## Supported Platforms
 
 - **Debian**: bullseye, bookworm, trixie
+- **Red Hat Families**: CentOS, Fedora, Rocky Linux
+- **Alpine Linux**: 3.20, 3.21, 3.23
 
 ## Requirements
 
@@ -164,6 +166,66 @@ dnf_repositories_docker:
 | `repo_gpgcheck` | No | - | Check repository metadata GPG signatures |
 | `priority` | No | - | Repository priority |
 | `module_hotfixes` | No | - | Enable module hotfixes |
+
+## Alpine Specifics
+
+### APK Configuration (Alpine)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `apk_repos_remove` | `false` | Remove repository files not managed by this role |
+| `apk_repos_backup` | `true` | Backup existing repositories `/etc/apk/repositories` file |
+| `apk_update` | `true` | Update package cache |
+| `apk_upgrade` | `true` | Upgrade all packages to their latest version |
+
+### Package Management
+
+Define packages to install using the `apk_packages` variable:
+
+```yaml
+apk_packages:
+  - vim
+  - curl
+  - htop
+```
+
+Define packages to remove using the `apk_packages_remove` variable:
+
+```yaml
+apk_packages_remove:
+  - nano
+```
+
+### Conditional Package Installation
+
+Use variables prefixed with `apk_packages_conditional_*` for conditional package installation:
+
+```yaml
+apk_packages_conditional_docker:
+  - packages:
+      - docker
+    condition: "{{ install_docker | default(false) }}"
+    state: present
+```
+
+### Repository Management
+
+Define repositories using variables prefixed with `apk_repositories_*`:
+
+```yaml
+apk_repositories_custom:
+  - name: alpine-community
+    url: "http://dl-cdn.alpinelinux.org/alpine/v3.23/community"
+    state: present
+```
+
+#### Repository Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `name` | No | `url` | Repository identifier |
+| `url` | Yes | - | Repository base URL line (`http://.../main` etc.) |
+| `state` | No | `present` | Repository state (`present`, `absent`) |
 
 ## Example Playbook
 
