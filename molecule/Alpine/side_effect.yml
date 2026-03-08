@@ -1,0 +1,8 @@
+---
+- name: Side Effect
+  hosts: molecule
+  gather_facts: false
+  tasks:
+    - name: Side effect placeholder
+      ansible.builtin.debug:
+        msg: "Side effect playbook executed"
