@@ -23,7 +23,7 @@ dnf_autoremove: true
 
 # APK (Alpine) defaults
 apk_repos_remove: false
-apk_repositories_backup: true
+apk_repos_backup: true
 
 apk_update: true
 apk_upgrade: true
