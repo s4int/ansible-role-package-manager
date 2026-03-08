@@ -12,7 +12,6 @@ dev = [
     "ansible-lint>=25.12.2",
     "docker>=7.1.0",
     "molecule-plugins[docker]>=25.8.12",
-    "pre-commit>=4.5.1",
     "pytest>=9.0.2",
     "testinfra>=6.0.0",
     "yamllint>=1.37.1",
