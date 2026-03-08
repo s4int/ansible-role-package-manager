@@ -1,10 +1,12 @@
 ---
 repos:
   - repo: https://github.com/ansible/ansible-lint
-    rev: v25.12.2
+    rev: v26.3.0
     hooks:
       - id: ansible-lint
         name: ansible-lint
+        additional_dependencies:
+          - ansible
         files: \.(yml|yaml)$
 
   - repo: https://github.com/adrienverge/yamllint
