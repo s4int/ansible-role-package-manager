@@ -1,0 +1,41 @@
+---
+dependency:
+  name: galaxy
+  options:
+    ignore-certs: false
+    ignore-errors: false
+    role-file: ../shared/requirements.yml
+    requirements-file: ../shared/requirements.yml
+
+lint: set -e ; yamllint . ; ansible-lint
+
+driver:
+  name: docker
+
+# Alpine Linux versions
+# Alpine 3.21 - EOL: November 2026
+# Alpine 3.20 - EOL: April 2026
+platforms:
+  - name: container-alpine-3.23
+    image: python:3.12-alpine3.23
+#  - name: container-alpine-3.23
+#    image: ${MOLECULE_DISTRO:-alpinelinux/ansible:latest}
+# - name: container-alpine-3.23
+#   image: alpinelinux/ansible:alpine-3.23
+
+provisioner:
+  name: ansible
+
+  playbooks:
+    create: ../shared/create.yml
+    converge: converge.yml
+    destroy: ../shared/destroy.yml
+    side_effect: side_effect.yml
+    verify: verify.yml
+
+verifier:
+  name: testinfra
+  directory: tests/
+  options:
+    v: true
+    sudo: true
