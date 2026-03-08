@@ -19,6 +19,8 @@
   when:
     - apk_repos_remove | bool
     - apk_repositories is defined and apk_repositories | length > 0
+  notify:
+    - Update apk cache
   tags:
     - repo
 
@@ -34,14 +36,7 @@
     label: "{{ item.name | default(item.url) }}"
   when:
     - apk_repositories is defined and apk_repositories | length > 0
+  notify:
+    - Update apk cache
   tags:
     - repo
-
-- name: Update apk cache
-  community.general.apk:
-    update_cache: true
-  when: apk_update | bool
-  tags:
-    - repo
-    - update
-    - upgrade

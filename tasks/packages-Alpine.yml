@@ -1,15 +1,8 @@
 ---
-- name: Update apk cache
-  community.general.apk:
-    update_cache: true
-  when: apk_update | bool
-  tags:
-    - update
-    - upgrade
-
 - name: Upgrade all packages to their latest version
   community.general.apk:
     upgrade: true
+    update_cache: true
   when: apk_upgrade | bool
   tags:
     - upgrade
