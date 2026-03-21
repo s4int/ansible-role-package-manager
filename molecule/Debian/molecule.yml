@@ -40,7 +40,7 @@ provisioner:
     create: ../shared/create.yml
     converge: converge.yml
     destroy: ../shared/destroy.yml
-    side_effect: side_effect.yml
+    side_effect: ../shared/side_effect.yml
     verify: verify.yml
 
   lint:
