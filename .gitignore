@@ -12,3 +12,4 @@ venv.bak/
 *.iml
 .ansible/
 .idea/
+__pycache__/
