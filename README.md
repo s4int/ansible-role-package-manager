@@ -2,9 +2,10 @@
 
 Ansible role to manage packages and repositories on Linux systems.
 
-## Supported Platforms
+## Tested Platforms
 
 - **Debian**: bullseye, bookworm, trixie
+- **Ubuntu**: jammy, noble
 - **Red Hat Families**: CentOS, Fedora, Rocky Linux
 - **Alpine Linux**: 3.20, 3.21, 3.23
 
@@ -27,7 +28,7 @@ Ansible role to manage packages and repositories on Linux systems.
 | `apt_autoremove` | `true` | Automatically remove unused packages |
 | `apt_remove_purge` | `true` | Purge configuration files when removing packages |
 
-### Package Management
+### APT Package Management
 
 Define packages to install using the `apt_packages` variable:
 
@@ -45,7 +46,7 @@ apt_packages_remove:
   - nano
 ```
 
-### Conditional Package Installation
+### APT Conditional Package Installation
 
 Use variables prefixed with `apt_packages_conditional_*` for conditional package installation:
 
@@ -58,7 +59,7 @@ apt_packages_conditional_docker:
     state: present
 ```
 
-### Repository Management
+### APT Repository Management
 
 Define repositories using variables prefixed with `apt_repositories_*`:
 
@@ -78,7 +79,7 @@ apt_repositories_docker:
       - amd64
 ```
 
-#### Repository Variables
+#### APT Repository Variables
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
@@ -103,7 +104,7 @@ apt_repositories_docker:
 | `dnf_upgrade` | `true` | Upgrade all packages to their latest version |
 | `dnf_autoremove` | `true` | Automatically remove unused packages |
 
-### Package Management
+### DNF Package Management
 
 Define packages to install using the `dnf_packages` variable:
 
@@ -121,7 +122,7 @@ dnf_packages_remove:
   - nano
 ```
 
-### Conditional Package Installation
+### DNF Conditional Package Installation
 
 Use variables prefixed with `dnf_packages_conditional_*` for conditional package installation:
 
@@ -134,7 +135,7 @@ dnf_packages_conditional_docker:
     state: present
 ```
 
-### Repository Management
+### DNF Repository Management
 
 Define repositories using variables prefixed with `dnf_repositories_*`:
 
@@ -148,7 +149,7 @@ dnf_repositories_docker:
     enabled: true
 ```
 
-#### Repository Variables
+#### DNF Repository Variables
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
@@ -178,7 +179,7 @@ dnf_repositories_docker:
 | `apk_update` | `true` | Update package cache |
 | `apk_upgrade` | `true` | Upgrade all packages to their latest version |
 
-### Package Management
+### APK Package Management
 
 Define packages to install using the `apk_packages` variable:
 
@@ -196,7 +197,7 @@ apk_packages_remove:
   - nano
 ```
 
-### Conditional Package Installation
+### APK Conditional Package Installation
 
 Use variables prefixed with `apk_packages_conditional_*` for conditional package installation:
 
@@ -208,7 +209,7 @@ apk_packages_conditional_docker:
     state: present
 ```
 
-### Repository Management
+### APK Repository Management
 
 Define repositories using variables prefixed with `apk_repositories_*`:
 
@@ -219,7 +220,7 @@ apk_repositories_custom:
     state: present
 ```
 
-#### Repository Variables
+#### APK Repository Variables
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
