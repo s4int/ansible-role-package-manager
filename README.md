@@ -18,7 +18,7 @@ Ansible role to manage packages and repositories on Linux systems.
 ### APT Configuration (Debian/Ubuntu)
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| -------- | ------- | ----------- |
 | `apt_keyrings_dir` | `/etc/apt/keyrings` | Directory for storing GPG keys |
 | `apt_deb822` | `false` | Use deb822 format for repositories (modern format) |
 | `apt_repositories_remove` | `false` | Remove repository files not managed by this role |
@@ -82,7 +82,7 @@ apt_repositories_docker:
 #### APT Repository Variables
 
 | Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
+| -------- | -------- | ------- | ----------- |
 | `name` | Yes | - | Repository identifier |
 | `types` | Yes | - | Repository types (e.g., `['deb']`, `['deb', 'deb-src']`) |
 | `uris` | Yes | - | Repository URLs |
@@ -98,7 +98,7 @@ apt_repositories_docker:
 ### DNF Configuration (RedHat/Fedora/CentOS/Rocky)
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| -------- | ------- | ----------- |
 | `dnf_repos_remove` | `false` | Remove repository files not managed by this role |
 | `dnf_update` | `true` | Update package cache |
 | `dnf_upgrade` | `true` | Upgrade all packages to their latest version |
@@ -152,7 +152,7 @@ dnf_repositories_docker:
 #### DNF Repository Variables
 
 | Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
+| -------- | -------- | ------- | ----------- |
 | `name` | Yes | - | Repository identifier |
 | `description` | No | `item.name` | Repository description |
 | `baseurl` | No | - | Repository base URL |
@@ -173,7 +173,7 @@ dnf_repositories_docker:
 ### APK Configuration (Alpine)
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| -------- | ------- | ----------- |
 | `apk_repos_remove` | `false` | Remove repository files not managed by this role |
 | `apk_repos_backup` | `true` | Backup existing repositories `/etc/apk/repositories` file |
 | `apk_update` | `true` | Update package cache |
@@ -223,7 +223,7 @@ apk_repositories_custom:
 #### APK Repository Variables
 
 | Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
+| -------- | -------- | ------- | ----------- |
 | `name` | No | `url` | Repository identifier |
 | `url` | Yes | - | Repository base URL line (`http://.../main` etc.) |
 | `state` | No | `present` | Repository state (`present`, `absent`) |
@@ -291,7 +291,7 @@ apk_repositories_custom:
 The role supports the following tags for selective execution:
 
 | Tag | Description |
-|-----|-------------|
+| --- | ----------- |
 | `package-manager` | Run all tasks |
 | `repo` | Repository management tasks |
 | `repo-remove` | Remove unmanaged repositories |
