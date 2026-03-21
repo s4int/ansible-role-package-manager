@@ -36,6 +36,8 @@
   when:
     - apt_repos_remove | bool
     - to_remove.matched > 0
+  notify:
+    - Update apt cache
   tags:
     - repo
 
@@ -47,6 +49,8 @@
   when:
     - apt_repositories is defined and apt_repositories | length > 0
     - (not apt_deb822) | bool
+  notify:
+    - Update apt cache
   tags:
     - repo
 
@@ -65,14 +69,7 @@
   loop_control:
     label: "{{ item.name }}"
   when: apt_deb822 | bool
+  notify:
+    - Update apt cache
   tags:
     - repo
-
-- name: Update
-  ansible.builtin.apt:
-    update_cache: true
-    cache_valid_time: "{{ apt_update_cache_valid_time | default(omit) }}"
-  tags:
-    - repo
-    - update
-    - upgrade

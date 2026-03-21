@@ -24,6 +24,8 @@
   when:
     - dnf_repos_remove | bool
     - dnf_repo_files_to_remove.matched > 0
+  notify:
+    - Update dnf cache
   tags:
     - repo
 
@@ -61,14 +63,7 @@
     label: "{{ item.name }}"
   when:
     - dnf_repositories is defined and dnf_repositories | length > 0
+  notify:
+    - Update dnf cache
   tags:
     - repo
-
-- name: Update dnf cache
-  ansible.builtin.dnf:
-    update_cache: true
-  when: dnf_update | bool
-  tags:
-    - repo
-    - update
-    - upgrade

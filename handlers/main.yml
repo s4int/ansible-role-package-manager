@@ -2,3 +2,11 @@
 - name: Update apk cache
   community.general.apk:
     update_cache: true
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Update dnf cache
+  ansible.builtin.dnf:
+    update_cache: true
