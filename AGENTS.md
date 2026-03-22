@@ -61,14 +61,14 @@ MOLECULE_DISTRO=geerlingguy/docker-ubuntu2404-ansible:latest uv run molecule tes
 Run all linting (as defined in molecule lint step)
 
 ```shell
-set -e ; yamllint . ; ansible-lint
+set -e ; uv run yamllint . ; uv run ansible-lint
 ```
 
 Individual linters
 
 ```shell
-yamllint .
-ansible-lint
+uv run yamllint .
+uv run ansible-lint
 ```
 
 Run pre-commit hooks (if installed)
