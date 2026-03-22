@@ -49,8 +49,6 @@
   when:
     - apt_repositories is defined and apt_repositories | length > 0
     - (not apt_deb822) | bool
-  notify:
-    - Update apt cache
   tags:
     - repo
 
