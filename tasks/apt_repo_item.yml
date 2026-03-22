@@ -23,6 +23,8 @@
     update_cache_retry_max_delay: "{{ apt_update_cache_retry_max_delay | default(omit) }}"
     update_cache: "{{ apt_update_cache | default(omit) }}"
     validate_certs: "{{ apt_validate_certs | default(omit) }}"
+  notify:
+    - Update apt cache
   vars:
     type: "{{ sub_item.type }}"
     architecture: >-
